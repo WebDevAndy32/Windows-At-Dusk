@@ -1,13 +1,13 @@
-//build base structure
+//build base structure - missing menu
 
-//start base functionality
+//start base functionality - 50%
 
-//Do basic styling
+//Do basic styling - started
 
 class App extends React.Component{
   constructor(props){
     super(props);
-
+    const maxDim = 5;
     let stateBuilder = (maxDimension) => {
       let stateKeys = [];
       
@@ -16,33 +16,37 @@ class App extends React.Component{
           stateKeys.push('' + x + '-' + y + '');
         }
       }
-      console.log('statekeys @ l-19: ', stateKeys);
+      //console.log('statekeys @ l-19: ', stateKeys);
       let tempState = {};
       
       stateKeys.forEach(squareKey => {
         tempState[squareKey] = true;
       });
-      console.log('tempState @ l-25: ', tempState);
+      //onsole.log('tempState @ l-25: ', tempState);
       return tempState;  
     }
     //attempting to dynamically set the initial state with above function
-    this.state = stateBuilder(5);
-    console.log('this state @ l-30: ', this.state);
+    this.state = stateBuilder(maxDim);
+    //console.log('this state @ l-30: ', this.state);
     this.clickSquare = this.clickSquare.bind(this);
     this.menuBuilder = this.menuBuilder.bind(this);
     this.boxBuilder = this.boxBuilder.bind(this);
+    this.findAdjacent = this.findAdjacent.bind(this);
+    this.checkForWin = this.checkForWin.bind(this);
   }
-  
-  
-  
+
   //uses state keys to make the square grids  
   boxBuilder = () => {
-    console.log('boxBuilder called @ l-40');
+    //console.log('boxBuilder called @ l-40');
     let stateKeys = Object.keys(this.state);
-    console.log('stateKeys: ', stateKeys);
+    //console.log('stateKeys: ', stateKeys);
     let elementArray = stateKeys.map(key => {
+      
       return (
-        <div id={key} key={key} className='light-square' onClick={this.clickSquare}>
+        <div id={key} key={key} 
+          className={this.state[key] === true ? 'light-square-on' : 'light-square-off'} 
+          style={{gridRow: key[2], gridColumn: key[0]}} 
+          onClick={this.clickSquare}>
           {key}
         </div>
       );
@@ -58,9 +62,46 @@ class App extends React.Component{
     );
   };
 
-
+  findAdjacent = (keyValue) => {
+    let adjSquares = [];
+    const xCoord = parseInt(keyValue[2]),
+          yCoord = parseInt(keyValue[0]);
+    
+    for(var i = -1; i <= 1; i++){
+      let newX = xCoord + i, newY = yCoord + i;
+      //conditionals filter out new squares that are outside the boundaries / don't exist
+      //******change 5 to maxdim at some point
+      if(newX >= 1 && newX <= 5){
+        adjSquares.push('' + newX + '-' + yCoord + '');
+      } 
+      if(newY >= 1 && newX <= 5){
+        adjSquares.push('' + xCoord + '-' + newY + '');
+      }
+      
+    }
+    let result = adjSquares.filter(x => {
+      return x !== keyValue;
+    });
+   	result.push(keyValue);
+    return result;
+  }
+  checkForWin = () => {
+    console.log('you win!');
+  }
+  
+/*clicking square changes state associate to id of element to false or true, which changes the class of element to "on" or "off"*/
   clickSquare = (event) => {
-    console.log(event.target.id);
+    let squareArray = this.findAdjacent(event.target.id);
+    
+    squareArray.forEach(currentSquare => {
+      
+       let stateSwitch = this.state[currentSquare] === true ? false : true;
+        this.setState({
+         [currentSquare]: stateSwitch
+        });
+      
+    });
+   
   }
   render(
     
