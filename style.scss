@@ -1,7 +1,9 @@
 root{
   /*var for row and col max from React, for now setting to a static 5*/
-  --maxDimension: 5;
+  --max-dimension: 5;
   --container-width: 98vw;
+  --grid-gap: 2vh;
+  --square-size: calc(var(--container-width) / var(--max-dimension));
 }
 header{
   display: grid;
@@ -15,15 +17,19 @@ header{
   height: var(--container-height);
   
   display: grid;
-  grid-template-rows: repeat(var(--maxDimension), calc(var(--container-width) / var(--maxDimension)));
-  grid-template-columns: repeat(var(--maxDimension), calc(var(--container-height) / var(--maxDimension)));
-  grid-gap: 2vh;
+  grid-template-rows: repeat(var(--max-dimension), var(--square-size));
+  grid-template-columns: repeat(var(--max-dimension), var(--square-size));
+  grid-gap: var(--grid-gap);
   justify-items: center;
   align-items: center;
 }
-.light-square{
+.light-square-on{
   background: red;
-  width: 100%;
-  height: 100%;
+  width: 75%;
+  height: 75%;
   border-radius: 5%;
+}
+.light-square-off{
+  @extend .light-square-on;
+  background: blue;
 }
