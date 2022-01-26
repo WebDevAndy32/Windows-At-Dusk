@@ -44,11 +44,12 @@ class App extends React.Component{
       
       return (
         <div id={key} key={key} 
-          className={this.state[key] === true ? 'light-square-on' : 'light-square-off'} 
+          className={this.state[key] === true ? 'light-square-on' : 'light-square-off'}
           style={{gridRow: key[2], gridColumn: key[0]}} 
           onClick={this.clickSquare}>
           {key}
         </div>
+        
       );
     });
     return elementArray;
@@ -69,7 +70,6 @@ class App extends React.Component{
     
     for(var i = -1; i <= 1; i++){
       let newX = xCoord + i, newY = yCoord + i;
-
       //conditionals filter out new squares that are outside the boundaries / don't exist
       //******change 5 to maxdim at some point
       if(newX >= 1 && newX <= 5){
@@ -77,19 +77,24 @@ class App extends React.Component{
       } 
       if(newY >= 1 && newY <= 5){
         adjSquares.push('' + xCoord + '-' + newY + '');
-      }
-      
+      } 
     }
 
     let result = adjSquares.filter(x => {
       return x !== keyValue;
     });
    	result.push(keyValue);
-
     return result;
   }
+  
   checkForWin = () => {
-    console.log('you win!');
+    let stateValues = Object.values(this.state);
+    
+    if(stateValues.indexOf(true) == -1){
+      console.log('you win!');
+    }else{
+      console.log('no winner yet');
+    }
   }
   
 /*clicking square changes state associate to id of element to false or true, which changes the class of element to "on" or "off"*/
@@ -102,10 +107,13 @@ class App extends React.Component{
         this.setState({
          [currentSquare]: stateSwitch
         });
-      
     });
-   
   }
+  
+  componentDidUpdate(){
+    this.checkForWin();
+  }
+  
   render(
     
   ){
@@ -114,7 +122,7 @@ class App extends React.Component{
         <header>
           <h1>Windows At Dusk</h1>
           <h2>Help turn off all the lights</h2>
-          {this.menuBuilder}
+          {this.menuBuilder()}
         </header>
         <div id='light-square-container'>
           {this.boxBuilder()}
