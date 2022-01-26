@@ -64,25 +64,28 @@ class App extends React.Component{
 
   findAdjacent = (keyValue) => {
     let adjSquares = [];
-    const xCoord = parseInt(keyValue[2]),
-          yCoord = parseInt(keyValue[0]);
+    const xCoord = parseInt(keyValue[0]),
+          yCoord = parseInt(keyValue[2]);
     
     for(var i = -1; i <= 1; i++){
       let newX = xCoord + i, newY = yCoord + i;
+
       //conditionals filter out new squares that are outside the boundaries / don't exist
       //******change 5 to maxdim at some point
       if(newX >= 1 && newX <= 5){
         adjSquares.push('' + newX + '-' + yCoord + '');
       } 
-      if(newY >= 1 && newX <= 5){
+      if(newY >= 1 && newY <= 5){
         adjSquares.push('' + xCoord + '-' + newY + '');
       }
       
     }
+
     let result = adjSquares.filter(x => {
       return x !== keyValue;
     });
    	result.push(keyValue);
+
     return result;
   }
   checkForWin = () => {
@@ -92,7 +95,7 @@ class App extends React.Component{
 /*clicking square changes state associate to id of element to false or true, which changes the class of element to "on" or "off"*/
   clickSquare = (event) => {
     let squareArray = this.findAdjacent(event.target.id);
-    
+
     squareArray.forEach(currentSquare => {
       
        let stateSwitch = this.state[currentSquare] === true ? false : true;
