@@ -22,14 +22,24 @@ header{
   grid-gap: var(--grid-gap);
   justify-items: center;
   align-items: center;
+  z-index: 0;
+  
 }
+#light-square-container div{
+  transition: 1s;
+}
+
 .light-square-on{
-  background: red;
+  background: #FFC9C9;
+  background: radial-gradient(ellipse at center, #FFC9C9, #FF0101);;
   width: 75%;
   height: 75%;
   border-radius: 5%;
+  opacity: 1;
+
 }
+
 .light-square-off{
   @extend .light-square-on;
-  background: blue;
+  opacity: .3;
 }
