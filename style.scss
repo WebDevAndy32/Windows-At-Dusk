@@ -44,6 +44,30 @@ header{
   opacity: 1;
   position: relative;
   z-index: 2;
+  /*left side add-on to square*/
+  &:before{
+    position: absolute;
+    content: '';
+    height: 100%;
+    width: 15%;
+    transform: skewY(-45deg);
+    background: #9f0101;
+    border-radius: var(--box-b-rad);
+    left: -15%;
+    top: 12%;
+    
+  }
+  &:after{
+    position: absolute;
+    content: '';
+    height: 15%;
+    width: 100%;
+    transform: skewX(-45deg);
+    background: #800101;
+    border-radius: var(--box-b-rad);
+    top: 100%;
+    left: -7%;
+  }
 }
 .light-square-off{
   @extend .light-square-on;
@@ -58,4 +82,28 @@ header{
   opacity: 1;
   z-index: 1;
   background: #000;
+  /*from light square on, refactor to a mixin later*/
+  &:before{
+    position: absolute;
+    content: '';
+    height: 100%;
+    width: 15%;
+    transform: skewY(-45deg);
+    background: #000;
+    border-radius: var(--box-b-rad);
+    left: -15%;
+    top: 12%;
+    
+  }
+  &:after{
+    position: absolute;
+    content: '';
+    height: 15%;
+    width: 100%;
+    transform: skewX(-45deg);
+    background: #000;
+    border-radius: var(--box-b-rad);
+    top: 100%;
+    left: -7%;
+  }
 }
