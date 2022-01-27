@@ -44,10 +44,13 @@ class App extends React.Component{
       
       return (
         <div id={key} key={key} 
-          className={this.state[key] === true ? 'light-square-on' : 'light-square-off'}
+          className='square-front'
           style={{gridRow: key[2], gridColumn: key[0]}} 
           onClick={this.clickSquare}>
-          {key}
+          <div className={this.state[key] === true ? 'light-square-on' : 'light-square-off'} >
+            {key}
+          </div>
+          <div className='square-back' />
         </div>
         
       );
@@ -99,7 +102,7 @@ class App extends React.Component{
   
 /*clicking square changes state associate to id of element to false or true, which changes the class of element to "on" or "off"*/
   clickSquare = (event) => {
-    let squareArray = this.findAdjacent(event.target.id);
+    let squareArray = this.findAdjacent(event.currentTarget.id);
 
     squareArray.forEach(currentSquare => {
       
