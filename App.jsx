@@ -33,6 +33,7 @@ class App extends React.Component{
     this.boxBuilder = this.boxBuilder.bind(this);
     this.findAdjacent = this.findAdjacent.bind(this);
     this.checkForWin = this.checkForWin.bind(this);
+    this.sendGridSquareSize = this.sendGridSquareSize.bind(this);
   }
 
   //uses state keys to make the square grids  
@@ -113,6 +114,24 @@ class App extends React.Component{
     });
   }
   
+  sendGridSquareSize = () => {
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    const cssRootVariables = document.querySelector(':root').style;
+   //
+    cssRootVariables.setProperty('--square-grid-value', 
+                                   width < height ? '98vw' : '98vh'
+                                );
+    /*let squareSize = document.getElementById('1-1').clientWidth;
+    let tanVal = Math.tan(45 * Math.PI / 180);
+    //cutoff is the height change from skewing before and after elements so the top can be adjusted by that much
+    let cutoff = Math.floor((squareSize * .15) * tanVal);
+    cssRootVariables.setProperty('--tan-size-cutoff', cutoff + 'px');*/
+
+  }
+  componentDidMount(){
+    this.sendGridSquareSize();
+  }
   componentDidUpdate(){
     this.checkForWin();
   }
