@@ -1,9 +1,12 @@
-root{
+:root{
   /*var for row and col max from React, for now setting to a static 5*/
   --max-dimension: 5;
   --container-width: 98vw;
+  --container-height: 98vh;
   --grid-gap: 2vh;
-  --square-size: calc(var(--container-width) / var(--max-dimension));
+  --square-grid-value: '';
+  --tan-size-cutoff: '';
+  --square-size: calc(var(--square-grid-value) / var(--max-dimension));
 }
 header{
   display: grid;
@@ -12,9 +15,9 @@ header{
 }
 #light-square-container{
   background: #888;
-  width: var(--container-width);
-  --container-height: 60vh;
-  height: var(--container-height);
+  width: var(--square-grid-value);
+  
+  height: var(--square-grid-value);
   
   display: grid;
   grid-template-rows: repeat(var(--max-dimension), var(--square-size));
@@ -29,12 +32,29 @@ header{
   transition: 1s;
 }
 .square-front{
-  --box-b-rad: 5%;
+  --box-b-rad: 5px;
+  --box-b-rad-mas: calc(var(--box-b-rad) * 1);
   width: 75%;
   height: 75%;
   background: transparent;
-  z-index: 3
+  z-index: 3;
+
 }
+
+@mixin squareSides($trans, $bGround, $height, $width, $top, $left, $bRad){
+    position: absolute;
+    content: '';
+    z-index: 1;
+  
+    transform: $trans;
+    background: $bGround;  
+    height: $height;
+    width: $width;
+    top: $top;
+    left: $left;
+    border-radius: $bRad;  
+}
+
 .light-square-on{
   background: #FFC9C9;
   background: radial-gradient(ellipse at center, #FFC9C9, #FF0101);;
@@ -44,29 +64,30 @@ header{
   opacity: 1;
   position: relative;
   z-index: 2;
+  box-shadow: 5px 10px 15px #555;
   /*left side add-on to square*/
+  
   &:before{
-    position: absolute;
-    content: '';
-    height: 100%;
-    width: 15%;
-    transform: skewY(-45deg);
-    background: #9f0101;
-    border-radius: var(--box-b-rad);
-    left: -15%;
-    top: 12%;
-    
+    @include squareSides(
+      $trans: skewY(-45deg),
+      $bGround: #9f0101, 
+      $height: 99%, 
+      $width: 15%, 
+      $top: 8%, 
+      $left: -14%, 
+      $bRad: var(--box-b-rad-mas) 0% 0% var(--box-b-rad-mas)
+    );
   }
   &:after{
-    position: absolute;
-    content: '';
-    height: 15%;
-    width: 100%;
-    transform: skewX(-45deg);
-    background: #800101;
-    border-radius: var(--box-b-rad);
-    top: 100%;
-    left: -7%;
+    @include squareSides(
+      $trans: skewX(-45deg),
+      $bGround: #800101, 
+      $height: 15%, 
+      $width: 100%, 
+      $top: 98%, 
+      $left: -7%, 
+      $bRad: 0% 0% var(--box-b-rad-mas) var(--box-b-rad-mas)
+    );
   }
 }
 .light-square-off{
@@ -84,26 +105,25 @@ header{
   background: #000;
   /*from light square on, refactor to a mixin later*/
   &:before{
-    position: absolute;
-    content: '';
-    height: 100%;
-    width: 15%;
-    transform: skewY(-45deg);
-    background: #000;
-    border-radius: var(--box-b-rad);
-    left: -15%;
-    top: 12%;
-    
+    @include squareSides(
+      $trans: skewY(-45deg),
+      $bGround: #000, 
+      $height: 99%, 
+      $width: 15%, 
+      $top: 8%, 
+      $left: -14%, 
+      $bRad: var(--box-b-rad-mas) 0% 0% var(--box-b-rad-mas)
+    );
   }
   &:after{
-    position: absolute;
-    content: '';
-    height: 15%;
-    width: 100%;
-    transform: skewX(-45deg);
-    background: #000;
-    border-radius: var(--box-b-rad);
-    top: 100%;
-    left: -7%;
+    @include squareSides(
+      $trans: skewX(-45deg),
+      $bGround: #000, 
+      $height: 15%, 
+      $width: 100%, 
+      $top: 98%, 
+      $left: -7%, 
+      $bRad: 0% 0% var(--box-b-rad-mas) var(--box-b-rad-mas)
+    );
   }
 }
