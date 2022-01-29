@@ -1,35 +1,173 @@
-root{
+:root{
   /*var for row and col max from React, for now setting to a static 5*/
+  font-family: 'Supermercado One', cursive;
   --max-dimension: 5;
   --container-width: 98vw;
+  --container-height: 98vh;
   --grid-gap: 2vh;
-  --square-size: calc(var(--container-width) / var(--max-dimension));
+  --square-grid-value: '';
+  --tan-size-cutoff: '';
+  --square-size: calc(var(--square-grid-value) / var(--max-dimension));
 }
 header{
   display: grid;
   grid-template-rows: 50% 50%;
-  grid-template-columns: repeat(5, calc(var(--container-width) / 5))
+  grid-template-columns: repeat(5, calc(var(--square-grid-value) / 5));
+  place-items: start;
+  
+  h1{
+    font-size: 2em;
+    grid-area: 1 / 2 / 2 / 6;
+    line-height: .1em;
+    letter-spacing: .25em;
+  }
+  h2{
+    grid-area: 2 / 3 / 3 / 6;
+    justify-self: center;
+  }
+  #menu-icon{
+    grid-area: 1 / 1 / 3 / 2;
+    place-self: center;
+    transform: scale(3);
+  }
 }
+
+
 #light-square-container{
   background: #888;
-  width: var(--container-width);
-  --container-height: 60vh;
-  height: var(--container-height);
+  width: var(--square-grid-value);
+  
+  height: var(--square-grid-value);
   
   display: grid;
   grid-template-rows: repeat(var(--max-dimension), var(--square-size));
   grid-template-columns: repeat(var(--max-dimension), var(--square-size));
-  grid-gap: var(--grid-gap);
-  justify-items: center;
+  //grid-gap: var(--grid-gap);
+  justify-items: space-evenly;
   align-items: center;
+  z-index: 0;
+  
 }
+#light-square-container div{
+  transition: .8s;
+}
+.square-front{
+  --box-b-rad: 5px;
+  --box-b-rad-mas: calc(var(--box-b-rad) * 1);
+  width: 100%;
+  height: 100%;
+  /*position and left account for the before after space on squares*/
+  position: relative;
+  left: 15%;
+  top: 7.5%;
+  
+  background: transparent;
+  z-index: 3;
+
+}
+
+@mixin squareSides($trans, $bGround, $height, $width, $top, $left, $bRad){
+    position: absolute;
+    content: '';
+    z-index: 1;
+  
+    transform: $trans;
+    background: $bGround;  
+    height: $height;
+    width: $width;
+    top: $top;
+    left: $left;
+    border-radius: $bRad;  
+}
+
 .light-square-on{
-  background: red;
+  background: #FFC9C9;
+  background: radial-gradient(ellipse at center, #FFC9C9, #FF0101);;
   width: 75%;
   height: 75%;
-  border-radius: 5%;
+  border-radius: var(--box-b-rad);
+  opacity: 1;
+  position: relative;
+  z-index: 2;
+  box-shadow: 5px 10px 15px #555;
+  /*left side add-on to square*/
+  
+  &:before{
+    @include squareSides(
+      $trans: skewY(-45deg),
+      $bGround: #9f0101, 
+      $height: 99%, 
+      $width: 15%, 
+      $top: 8%, 
+      $left: -14%, 
+      $bRad: var(--box-b-rad-mas) 0% 0% var(--box-b-rad-mas)
+    );
+  }
+  &:after{
+    @include squareSides(
+      $trans: skewX(-45deg),
+      $bGround: #800101, 
+      $height: 15%, 
+      $width: 100%, 
+      $top: 98%, 
+      $left: -8%, 
+      $bRad: 0% 0% var(--box-b-rad-mas) var(--box-b-rad-mas)
+    );
+  }
 }
 .light-square-off{
   @extend .light-square-on;
-  background: blue;
+  opacity: .2;
+}
+.square-back{
+  border-radius: var(--box-b-rad);
+  width: 75%;
+  height: 75%;
+  position: relative;
+  bottom: 75%;
+  opacity: 1;
+  z-index: 1;
+  background: #000;
+  /*from light square on, refactor to a mixin later*/
+  &:before{
+    @include squareSides(
+      $trans: skewY(-45deg),
+      $bGround: #000, 
+      $height: 99%, 
+      $width: 15%, 
+      $top: 8%, 
+      $left: -14%, 
+      $bRad: var(--box-b-rad-mas) 0% 0% var(--box-b-rad-mas)
+    );
+  }
+  &:after{
+    @include squareSides(
+      $trans: skewX(-45deg),
+      $bGround: #000, 
+      $height: 15%, 
+      $width: 100%, 
+      $top: 98%, 
+      $left: -8%, 
+      $bRad: 0% 0% var(--box-b-rad-mas) var(--box-b-rad-mas)
+    );
+  }
+}
+
+#winningScreen{
+  position: relative;
+  grid-area: 1 / 1 / 6 / 6;
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  background: rgba(0, 0, 0, .85);
+  border-radius: 5px;
+  z-index: 5;
+  display: grid;
+  place-content: center;
+  //want screen to drop down from top but running out of time for today to set up
+  /*transform: translateY(500%);
+  transition: transform 3s ease-in;*/
+}
+#blankSpace{
+  display: none;
 }

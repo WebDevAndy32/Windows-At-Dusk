@@ -23,6 +23,7 @@ class App extends React.Component{
         tempState[squareKey] = true;
       });
       //onsole.log('tempState @ l-25: ', tempState);
+      tempState['winner'] = 'no';
       return tempState;  
     }
     //attempting to dynamically set the initial state with above function
@@ -33,14 +34,19 @@ class App extends React.Component{
     this.boxBuilder = this.boxBuilder.bind(this);
     this.findAdjacent = this.findAdjacent.bind(this);
     this.checkForWin = this.checkForWin.bind(this);
+    this.sendGridSquareSize = this.sendGridSquareSize.bind(this);
   }
 
   //uses state keys to make the square grids  
   boxBuilder = () => {
     //console.log('boxBuilder called @ l-40');
+    //console.log('stateKeys: ', stateKeys);    
     let stateKeys = Object.keys(this.state);
-    //console.log('stateKeys: ', stateKeys);
-    let elementArray = stateKeys.map(key => {
+    let squareStates = stateKeys.filter(key => {
+      return key !== 'winner';
+    });
+    //console.log('squareState: ', squareStates);
+    let elementArray = squareStates.map(key => {
       
       return (
         <div id={key} key={key} 
@@ -48,7 +54,7 @@ class App extends React.Component{
           style={{gridRow: key[2], gridColumn: key[0]}} 
           onClick={this.clickSquare}>
           <div className={this.state[key] === true ? 'light-square-on' : 'light-square-off'} >
-            {key}
+            {/*{key}*/}
           </div>
           <div className='square-back' />
         </div>
@@ -92,11 +98,11 @@ class App extends React.Component{
   
   checkForWin = () => {
     let stateValues = Object.values(this.state);
-    
-    if(stateValues.indexOf(true) == -1){
-      console.log('you win!');
-    }else{
-      console.log('no winner yet');
+    /* ***without state.winner added conditional, this infinite loops on win*** */
+    if(stateValues.indexOf(true) == -1 && this.state.winner == 'no'){
+      this.setState({
+          winner: 'yes'
+        });
     }
   }
   
@@ -113,13 +119,42 @@ class App extends React.Component{
     });
   }
   
+  sendGridSquareSize = () => {
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    const cssRootVariables = document.querySelector(':root').style;
+   //
+    cssRootVariables.setProperty('--square-grid-value', 
+                                   width < height ? '98vw' : '98vh'
+                                );
+    
+    
+    /*let squareSize = document.getElementById('1-1').clientWidth;
+    let tanVal = Math.tan(45 * Math.PI / 180);
+    //cutoff is the height change from skewing before and after elements so the top can be adjusted by that much
+    let cutoff = Math.floor((squareSize * .15) * tanVal);
+    cssRootVariables.setProperty('--tan-size-cutoff', cutoff + 'px');*/
+
+  }
+  componentDidMount(){
+    this.sendGridSquareSize();
+  }
   componentDidUpdate(){
     this.checkForWin();
   }
   
-  render(
-    
-  ){
+  render(){
+    const winningScreen = (
+      <div id='winningScreen'>
+       <h1>Congratulations!</h1>
+       <hr />
+       <h2>You won the game!</h2>
+      </div>
+    );
+    const blankSpace = (
+      <div id='blankSpace' />
+    );
+      
     return(
       <div>
         <header>
@@ -129,7 +164,8 @@ class App extends React.Component{
         </header>
         <div id='light-square-container'>
           {this.boxBuilder()}
-        </div>  
+          {this.state.winner == 'yes' ? winningScreen : blankSpace }
+        </div>
       </div>
     );
   }
