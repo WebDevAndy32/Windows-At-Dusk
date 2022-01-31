@@ -59,8 +59,16 @@ class App extends React.Component{
     });
     return elementArray;
   };
-  menuHandler = (event) => {
+  menuHandler = () => {
     document.getElementById('menu-icon').classList.toggle('menu-toggle-on');
+    
+    let menu = document.getElementById('menu');
+    if(menu.style.display === 'flex'){
+      menu.style.display = 'none';
+    }else{
+      menu.style.display = 'flex';
+    }
+    
   }
   menuBuilder = () => {
     return(
@@ -152,6 +160,13 @@ class App extends React.Component{
     const blankSpace = (
       <div id='blankSpace' />
     );
+    const menu = (
+      <div id='menu'>
+        <div>Reset</div>
+        <div>Change Dimension</div>
+        <div>Random Pattern</div>
+      </div>
+    );
       
     return(
       <div>
@@ -162,6 +177,7 @@ class App extends React.Component{
         </header>
         <div id='light-square-container'>
           {this.boxBuilder()}
+          {menu}
           {this.state.winner == 'yes' ? winningScreen : blankSpace }
         </div>
       </div>
