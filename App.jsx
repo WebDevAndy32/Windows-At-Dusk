@@ -1,8 +1,3 @@
-//build base structure - missing menu
-
-//start base functionality - 50%
-
-//Do basic styling - started
 
 class App extends React.Component{
   constructor(props){
@@ -30,6 +25,7 @@ class App extends React.Component{
     this.state = stateBuilder(maxDim);
     //console.log('this state @ l-30: ', this.state);
     this.clickSquare = this.clickSquare.bind(this);
+    this.menuHandler = this.menuHandler.bind(this);
     this.menuBuilder = this.menuBuilder.bind(this);
     this.boxBuilder = this.boxBuilder.bind(this);
     this.findAdjacent = this.findAdjacent.bind(this);
@@ -63,12 +59,14 @@ class App extends React.Component{
     });
     return elementArray;
   };
-
+  menuHandler = (event) => {
+    document.getElementById('menu-icon').classList.toggle('menu-toggle-on');
+  }
   menuBuilder = () => {
     return(
-    <div id='menu-icon'>
+    <div id='menu-icon' className='menu-toggle' onClick={this.menuHandler}>
       <i class="fas fa-bars"></i>
-    </div>    
+    </div>
     );
   };
 
