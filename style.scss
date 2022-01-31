@@ -76,6 +76,28 @@ header{
     transform: rotate(270deg);
   }
 }
+#menu{
+  grid-area: 1 / 1 / 5 / 3;
+  place-self: start;
+  display: none;
+  width: fit-content;
+  height: fit-content;
+
+  border-radius: 5px;
+  padding: 1.5em;
+  transition: 1s;
+  background: rgba(0, 0, 0, .9);
+  flex-direction: column;
+  color: #fff;
+  z-index: 4;
+  position: relative;
+  top: -10%;
+  left: -5%;
+  
+  div{
+    margin: .5em 0em .5em 0em;
+  }
+}
 #light-square-container{
   background: #555;
   width: var(--square-grid-value);
