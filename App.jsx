@@ -131,7 +131,7 @@ class App extends React.Component{
     const cssRootVariables = document.querySelector(':root').style;
    //
     cssRootVariables.setProperty('--square-grid-value', 
-                                   width < height ? '98vw' : '98vh'
+                                   width < height ? '85vw' : '85vh'
                                 );
     
     
@@ -169,7 +169,7 @@ class App extends React.Component{
     );
       
     return(
-      <div>
+      <div id='container-pre-render'>
         <header>
           <h1>Windows At Dusk</h1>
           <h2>Help turn off all the lights</h2>
