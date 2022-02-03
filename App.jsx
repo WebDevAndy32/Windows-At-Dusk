@@ -31,6 +31,9 @@ class App extends React.Component{
     this.findAdjacent = this.findAdjacent.bind(this);
     this.checkForWin = this.checkForWin.bind(this);
     this.sendGridSquareSize = this.sendGridSquareSize.bind(this);
+    this.reset = this.reset.bind(this);
+    this.changeDimension = this.changeDimension.bind(this);
+    this.selectPattern = this.selectPattern.bind(this);
   }
 
   //uses state keys to make the square grids  
@@ -77,6 +80,32 @@ class App extends React.Component{
     </div>
     );
   };
+
+  reset = () => {
+    //setstate to default
+    console.log('RESETTING!');
+    let stateKeys = Object.keys(this.state);
+    let squareStates = stateKeys.filter(key => {
+      return key !== 'winner';
+    });
+    squareStates.forEach(key => {
+      this.setState({
+        [key]: true
+      });
+    });
+    this.setState({
+      winner: 'no'
+    });
+    console.log('state: ', this.state);
+  }
+
+  changeDimension = () => {
+    console.log('changeDimension Function!');
+  }
+
+  selectPattern = () => {
+    console.log('selectPattern Function!');
+  }
 
   findAdjacent = (keyValue) => {
     let adjSquares = [];
@@ -153,8 +182,10 @@ class App extends React.Component{
     const winningScreen = (
       <div id='winningScreen'>
        <h1>Congratulations!</h1>
-       <hr />
+       <br />
        <h2>You won the game!</h2>
+       <br />
+       <h3>Press "Reset" in Menu to Play Again</h3>
       </div>
     );
     const blankSpace = (
@@ -162,9 +193,9 @@ class App extends React.Component{
     );
     const menu = (
       <div id='menu'>
-        <div>Reset</div>
-        <div>Change Dimension</div>
-        <div>Random Pattern</div>
+        <div onClick={this.reset}>Reset</div>
+        <div onClick={this.changeDimension}>Change Dimension</div>
+        <div onClick={this.selectPattern}>Select Starting Pattern</div>
       </div>
     );
       
