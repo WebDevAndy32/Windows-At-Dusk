@@ -2,7 +2,7 @@
   /*var for row and col max from React, for now setting to a static 5*/
   font-family: 'Supermercado One', cursive;
   background: linear-gradient(0deg, #333, #222);
-  --max-dimension: 5;
+  --max-dimension: '';
   --container-width: 98vw;
   --container-height: 98vh;
   --grid-gap: 2vh;
@@ -119,7 +119,7 @@ header{
   }
 }
 #light-square-container{
-  grid-area: 2 / 1 / 3 / 6;
+  grid-area: 2 / 1 / 3 / calc(var(--max-dimension) + 1);
   //background: yellow;
   background: #555;
   width: 100%;  
