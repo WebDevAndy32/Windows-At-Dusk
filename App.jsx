@@ -62,10 +62,13 @@ class App extends React.Component{
 
   changeDimension = () => {
     //console.log('changeDimension Function!', event.target.id, event.target.value);
-    let newNumber = parseInt(event.target.value, 10);
-    this.setState({
-      maxDim: newNumber
-    })
+    //conditional prevents a misclick from breaking the app
+    if(event.target.value !== undefined){
+      let newNumber = parseInt(event.target.value, 10);
+      this.setState({
+        maxDim: newNumber
+      });
+    } 
   }
 
   selectPattern = () => {
