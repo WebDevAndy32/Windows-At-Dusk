@@ -2,12 +2,37 @@
 class App extends React.Component{
   constructor(props){
     super(props);
-    this.state = {
-      //winner: 'no',
-      maxDim: 5
-    }
 
-    //console.log('this state @ l-30: ', this.state);
+    let stateBuilder = (maxDimension) => {
+      let stateKeys = [];
+      
+      for(var x = 1; x <= maxDimension; x++){
+        for(var y = 1; y <= maxDimension; y++){
+          stateKeys.push('' + x + '-' + y + '');
+        }
+      }
+      //console.log('statekeys @ l-19: ', stateKeys);
+      let tempState = {};
+      
+      stateKeys.forEach(squareKey => {
+        tempState[squareKey] = true;
+      });
+      //console.log('tempState @ l-25: ', tempState);
+      return tempState;  
+    }
+    //dynamically set the initial state with above function
+
+    this.state = {
+      maxDim: 5,
+      threeDim: stateBuilder(3),
+      fiveDim: stateBuilder(5),
+      sevenDim: stateBuilder(7) 
+    }
+    //console.log('initial app states: ', this.state);
+
+    //three interchanging pre-made states stored in threeDim, fiveDim, sevenDim, change to maxDim pushes state down to lightbox.
+    // state stores only active buttons and they are pushed from their value when de-activated. win criteria is a blank array in activeSquares state
+
 
     this.menuHandler = this.menuHandler.bind(this);
     this.menuBuilder = this.menuBuilder.bind(this);
@@ -36,7 +61,7 @@ class App extends React.Component{
   };
 
   changeDimension = () => {
-    console.log('changeDimension Function!', event.target.id, event.target.value);
+    //console.log('changeDimension Function!', event.target.id, event.target.value);
     let newNumber = parseInt(event.target.value, 10);
     this.setState({
       maxDim: newNumber
@@ -63,7 +88,7 @@ class App extends React.Component{
   }
   
   render(){
-      console.log(this.state);
+      
     return(
       <div id='container-pre-render'>
         <header>
@@ -71,9 +96,15 @@ class App extends React.Component{
           <h2>Help turn off all the lights</h2>
           {this.menuBuilder()}
         </header>
-        { this.state.maxDim === 7 ? <LightBox maxDim={7} changeDimension={this.changeDimension} /> :
-            this.state.maxDim === 3 ? <LightBox maxDim={3} changeDimension={this.changeDimension} /> :
-              <LightBox maxDim={5} changeDimension={this.changeDimension} /> 
+        { this.state.maxDim === 7 ? <LightBox maxDim={this.state.maxDim} 
+                                      gridKeys={this.state.sevenDim} 
+                                      changeDimension={this.changeDimension} /> :
+            this.state.maxDim === 3 ? <LightBox maxDim={this.state.maxDim} 
+                                        gridKeys={this.state.threeDim} 
+                                        changeDimension={this.changeDimension} /> :
+                                        <LightBox maxDim={this.state.maxDim} 
+                                          gridKeys={this.state.fiveDim} 
+                                          changeDimension={this.changeDimension} /> 
         }
       </div>
     );
@@ -84,26 +115,12 @@ class App extends React.Component{
 class LightBox extends React.Component{
   constructor(props){
     super(props);
-    let stateBuilder = (maxDimension) => {
-      let stateKeys = [];
-      
-      for(var x = 1; x <= maxDimension; x++){
-        for(var y = 1; y <= maxDimension; y++){
-          stateKeys.push('' + x + '-' + y + '');
-        }
-      }
-      //console.log('statekeys @ l-19: ', stateKeys);
-      let tempState = {};
-      
-      stateKeys.forEach(squareKey => {
-        tempState[squareKey] = true;
-      });
-      //console.log('tempState @ l-25: ', tempState);
-      tempState['winner'] = 'no';
-      return tempState;  
+
+    this.state = {
+      winner: 'no',
+      dimTemplate: {},
+      activeSquares: []
     }
-    //dynamically set the initial state with above function
-    this.state = stateBuilder(this.props.maxDim);
 
     this.boxBuilder = this.boxBuilder.bind(this);
     this.checkForWin = this.checkForWin.bind(this);
@@ -117,18 +134,19 @@ class LightBox extends React.Component{
   boxBuilder = () => {
     //console.log('boxBuilder called @ l-40');
     //console.log('stateKeys: ', stateKeys);    
-    let stateKeys = Object.keys(this.state);
+    let stateKeys = Object.keys(this.state.dimTemplate);
     let squareStates = stateKeys.filter(key => {
       return key !== 'winner';
     });
-    //console.log('squareState: ', squareStates);
+
     let elementArray = squareStates.map(key => {  
+
       return (
         <div id={key} key={key} 
           className='square-front'
           style={{gridRow: key[2], gridColumn: key[0]}} 
           onClick={this.clickSquare}>
-          <div className={this.state[key] === true ? 'light-square-on' : 'light-square-off'} >
+          <div className={this.state.activeSquares.indexOf(key) !== -1 ? 'light-square-on' : 'light-square-off'} >
             {/*{key}*/}
           </div>
           <div className='square-back' />
@@ -136,6 +154,7 @@ class LightBox extends React.Component{
         
       );
     });
+
     return elementArray;
   };
   
@@ -143,11 +162,10 @@ class LightBox extends React.Component{
     let adjSquares = [];
     const xCoord = parseInt(keyValue[0]),
           yCoord = parseInt(keyValue[2]);
-    
+
     for(var i = -1; i <= 1; i++){
       let newX = xCoord + i, newY = yCoord + i;
       //conditionals filter out new squares that are outside the boundaries / don't exist
-      //******change 5 to maxdim at some point
       if(newX >= 1 && newX <= this.props.maxDim){
         adjSquares.push('' + newX + '-' + yCoord + '');
       } 
@@ -163,52 +181,76 @@ class LightBox extends React.Component{
     return result;
   }
 
-/*clicking square changes state associate to id of element to false or true, which changes the class of element to "on" or "off"*/
+/*clicking square changes activeSquare state to have it's id or not. Tetr Cond. in boxBuilder checks index of activeSquare state to turn square off or on*/
 clickSquare = (event) => {
   let squareArray = this.findAdjacent(event.currentTarget.id);
+  let aSqr = this.state.activeSquares;
 
   squareArray.forEach(currentSquare => {
-    let stateSwitch = this.state[currentSquare] === true ? false : true;
-      this.setState({
-        [currentSquare]: stateSwitch
-      });
+    if(aSqr.indexOf(currentSquare) == -1){
+      aSqr.push(currentSquare);
+    }else{
+      aSqr.splice(aSqr.indexOf(currentSquare), 1);
+    }
   });
+
+  this.setState({
+    activeSquares: aSqr 
+  });
+  
 }
 
   reset = () => {
     //setstate to default
-    console.log('RESETTING!');
-    let stateKeys = Object.keys(this.state);
+    //console.log('RESETTING!');
+    let stateKeys = Object.keys(this.state.dimTemplate);
     let squareStates = stateKeys.filter(key => {
       return key !== 'winner';
     });
-    squareStates.forEach(key => {
-      this.setState({
-        [key]: true
-      });
-    });
+
     this.setState({
+      activeSquares: squareStates,
       winner: 'no'
     });
-    console.log('state: ', this.state);
+
   }
   
   checkForWin = () => {
-    let stateValues = Object.values(this.state);
+    let stateValues = this.state.activeSquares;
     /* ***without state.winner added conditional, this infinite loops on win*** */
-    if(stateValues.indexOf(true) == -1 && this.state.winner == 'no'){
+    if(stateValues.length == 0 && this.state.winner == 'no'){
       this.setState({
           winner: 'yes'
         });
     }
+    //console.log('winning!');
   }
 
-  componentDidUpdate(){
+  componentDidMount(){
+    this.setState({
+      dimTemplate: this.props.gridKeys,
+      activeSquares: Object.keys(this.props.gridKeys)
+    });
+  }
+
+  componentDidUpdate(prevProps){
     this.checkForWin();
+    //console.log('lightsquare states: ', this.state);
+    //pulls changed dimension values from parent state, pushes them to local state and component re-renders
+    if(prevProps.maxDim !== this.props.maxDim){
+      this.setState({
+         dimTemplate: this.props.gridKeys,
+          activeSquares: Object.keys(this.props.gridKeys)
+      });
+      //updates grid in scss
+      const cssRootVariables = document.querySelector(':root').style;
+      cssRootVariables.setProperty('--max-dimension', this.props.maxDim);
+    }
+
   }
 
   render(){
-    console.log('light box state: ', this.state);
+
     const winningScreen = (
       <div id='winningScreen'>
         <h1>Congratulations!</h1>
