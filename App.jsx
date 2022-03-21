@@ -26,7 +26,7 @@ class App extends React.Component{
       maxDim: 5,
       threeDim: stateBuilder(3),
       fiveDim: stateBuilder(5),
-      sevenDim: stateBuilder(7) 
+      sevenDim: stateBuilder(7)
     }
     //console.log('initial app states: ', this.state);
 
@@ -45,10 +45,13 @@ class App extends React.Component{
     document.getElementById('menu-icon').classList.toggle('menu-toggle-on');
     
     let menu = document.getElementById('menu');
+    let blankSpace = document.getElementById('blankSpace');
     if(menu.style.display === 'flex'){
       menu.style.display = 'none';
+      blankSpace.style.display = 'none';
     }else{
       menu.style.display = 'flex';
+      blankSpace.style.display = 'flex';
     }
     
   }
@@ -130,6 +133,7 @@ class LightBox extends React.Component{
     this.findAdjacent = this.findAdjacent.bind(this);
     this.clickSquare = this.clickSquare.bind(this);
     this.reset = this.reset.bind(this);
+    this.clickOut = this.clickOut.bind(this);
 
   }
 
@@ -218,6 +222,14 @@ clickSquare = (event) => {
 
   }
   
+  clickOut = () => {
+    let menu = document.getElementById('menu');
+    let blankSpace = document.getElementById('blankSpace');
+    
+    menu.style.display = 'none';
+    blankSpace.style.display = 'none';
+  }
+  
   checkForWin = () => {
     let stateValues = this.state.activeSquares;
     /* ***without state.winner added conditional, this infinite loops on win*** */
@@ -264,7 +276,7 @@ clickSquare = (event) => {
       </div>
     );
     const blankSpace = (
-      <div id='blankSpace' />
+      <div id='blankSpace' onClick={this.clickOut}/>
     );
     const menu = (
       <div id='menu'>
@@ -288,6 +300,7 @@ clickSquare = (event) => {
     return(
       <div id='light-square-container'>
           {this.boxBuilder()}
+          {blankSpace}
           {menu}
           {this.state.winner == 'yes' ? winningScreen : blankSpace }
         </div> 
