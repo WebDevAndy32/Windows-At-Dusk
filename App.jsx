@@ -17,10 +17,9 @@ class App extends React.Component{
       stateKeys.forEach(squareKey => {
         tempState[squareKey] = true;
       });
-      //console.log('tempState @ l-25: ', tempState);
       return tempState;  
     }
-    //dynamically set the initial state with above function
+    //set the initial state with above function
 
     this.state = {
       maxDim: 5,
@@ -64,7 +63,6 @@ class App extends React.Component{
   };
 
   changeDimension = () => {
-    //console.log('changeDimension Function!', event.target.id, event.target.value);
     //conditional prevents a misclick from breaking the app
     if(event.target.value !== undefined){
       let newNumber = parseInt(event.target.value, 10);
@@ -139,7 +137,6 @@ class LightBox extends React.Component{
 
   //uses state keys to make the square grids  
   boxBuilder = () => {
-    //console.log('boxBuilder called @ l-40');
     //console.log('stateKeys: ', stateKeys);    
     let stateKeys = Object.keys(this.state.dimTemplate);
     let squareStates = stateKeys.filter(key => {
@@ -238,7 +235,6 @@ clickSquare = (event) => {
           winner: 'yes'
         });
     }
-    //console.log('winning!');
   }
 
   componentDidMount(){
@@ -250,7 +246,6 @@ clickSquare = (event) => {
 
   componentDidUpdate(prevProps){
     this.checkForWin();
-    //console.log('lightsquare states: ', this.state);
     //pulls changed dimension values from parent state, pushes them to local state and component re-renders
     if(prevProps.maxDim !== this.props.maxDim){
       this.setState({
@@ -293,7 +288,7 @@ clickSquare = (event) => {
             <input type='radio' name='dim-select' id='seven' value='7' />
           </form>
         </div>
-        <div onClick={this.selectPattern}>Select Starting Pattern</div>
+        {/*<div onClick={this.selectPattern}>Select Starting Pattern</div>*/}
       </div>
     );
 
